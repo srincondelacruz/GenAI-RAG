@@ -1,0 +1,22 @@
+# Environment variables (credentials)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Backend data
+backend/genai_rag.db
+backend/chroma_data/
+backend/uploads/
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.vscode/
+.idea/
