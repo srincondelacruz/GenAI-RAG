@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Send, Bot, User, ArrowLeft, ChevronDown } from 'lucide-react';
+import { Send, Bot, User, ArrowLeft } from 'lucide-react';
 import { getAssistants, getAssistant, sendMessage } from '../api/client';
 
 export default function Chat() {
@@ -67,7 +67,7 @@ export default function Chat() {
         ...prev,
         {
           role: 'assistant',
-          content: `❌ Error: ${err.message}`,
+          content: `Error: ${err.message}`,
           sources: [],
         },
       ]);
@@ -78,79 +78,66 @@ export default function Chat() {
 
   return (
     <div className="chat-layout">
-      {/* Header del chat */}
-      <div
-        style={{
-          padding: 'var(--space-md)',
-          borderBottom: '1px solid var(--border-color)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--space-md)',
-        }}
-      >
+      {/* Header */}
+      <div className="chat-header">
         <button className="btn-icon" onClick={() => navigate('/')} title="Volver">
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
 
         <div style={{ flex: 1 }}>
           {assistants.length > 0 ? (
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-              <select
-                id="chat-assistant-select"
-                value={selectedId}
-                onChange={(e) => {
-                  setSelectedId(e.target.value);
-                  setMessages([]);
-                }}
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-sm)',
-                  color: 'var(--text-primary)',
-                  padding: '0.5rem 2rem 0.5rem 0.75rem',
-                  fontSize: '0.9rem',
-                  fontFamily: 'var(--font-family)',
-                  cursor: 'pointer',
-                  appearance: 'none',
-                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 0.5rem center',
-                }}
-              >
-                <option value="">Selecciona un asistente...</option>
-                {assistants.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select
+              id="chat-assistant-select"
+              value={selectedId}
+              onChange={(e) => {
+                setSelectedId(e.target.value);
+                setMessages([]);
+              }}
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                color: 'var(--text-primary)',
+                padding: '6px 28px 6px 10px',
+                fontSize: '0.82rem',
+                fontFamily: 'var(--font)',
+                cursor: 'pointer',
+                appearance: 'none',
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 8px center',
+              }}
+            >
+              <option value="">Selecciona un asistente...</option>
+              {assistants.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
           ) : (
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
               No hay asistentes creados
             </span>
           )}
         </div>
 
         {assistant && (
-          <span
-            className="badge badge-accent"
-            style={{ fontSize: '0.75rem' }}
-          >
+          <span className="badge badge-accent">
             {assistant.document_count} docs
           </span>
         )}
       </div>
 
-      {/* Mensajes */}
+      {/* Messages */}
       <div className="chat-messages">
         {messages.length === 0 && (
-          <div className="empty-state" style={{ marginTop: '4rem' }}>
-            <Bot size={64} />
+          <div className="empty-state" style={{ marginTop: '6rem' }}>
+            <Bot size={40} />
             <h3>
               {selectedId
                 ? `Chatea con ${assistant?.name || 'tu asistente'}`
-                : 'Selecciona un asistente para empezar'}
+                : 'Selecciona un asistente'}
             </h3>
             <p>
               {selectedId
@@ -165,58 +152,35 @@ export default function Chat() {
             key={i}
             className={`message ${msg.role === 'user' ? 'message-user' : 'message-assistant'}`}
           >
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-              {msg.role === 'assistant' && (
-                <Bot
-                  size={18}
-                  style={{
-                    color: 'var(--accent-primary)',
-                    flexShrink: 0,
-                    marginTop: 2,
-                  }}
-                />
-              )}
-              <div style={{ flex: 1 }}>
-                <div style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</div>
 
-                {/* Fuentes */}
-                {msg.sources && msg.sources.length > 0 && (
-                  <details className="message-sources">
-                    <summary>
-                      📎 {msg.sources.length} fuentes consultadas
-                    </summary>
-                    {msg.sources.map((s, j) => (
-                      <div key={j} className="source-item">
-                        <strong>{s.document}</strong>{' '}
-                        <span style={{ color: 'var(--accent-secondary)' }}>
-                          ({(s.score * 100).toFixed(0)}% relevancia)
-                        </span>
-                        <p style={{ marginTop: 4 }}>
-                          {s.text.substring(0, 200)}
-                          {s.text.length > 200 ? '...' : ''}
-                        </p>
-                      </div>
-                    ))}
-                  </details>
-                )}
-              </div>
-              {msg.role === 'user' && (
-                <User
-                  size={18}
-                  style={{ flexShrink: 0, marginTop: 2, opacity: 0.7 }}
-                />
-              )}
-            </div>
+            {/* Sources */}
+            {msg.sources && msg.sources.length > 0 && (
+              <details className="message-sources">
+                <summary>
+                  {msg.sources.length} fuentes consultadas
+                </summary>
+                {msg.sources.map((s, j) => (
+                  <div key={j} className="source-item">
+                    <strong>{s.document}</strong>{' '}
+                    <span style={{ color: 'var(--accent)' }}>
+                      ({(s.score * 100).toFixed(0)}%)
+                    </span>
+                    <p style={{ marginTop: 4 }}>
+                      {s.text.substring(0, 200)}
+                      {s.text.length > 200 ? '…' : ''}
+                    </p>
+                  </div>
+                ))}
+              </details>
+            )}
           </div>
         ))}
 
         {sending && (
           <div className="message message-assistant">
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <Bot size={18} style={{ color: 'var(--accent-primary)' }} />
-              <div className="loading-dots">
-                <span></span><span></span><span></span>
-              </div>
+            <div className="loading-dots">
+              <span></span><span></span><span></span>
             </div>
           </div>
         )}
@@ -246,7 +210,7 @@ export default function Chat() {
             disabled={!input.trim() || !selectedId || sending}
             title="Enviar"
           >
-            <Send size={18} />
+            <Send size={16} />
           </button>
         </form>
       </div>

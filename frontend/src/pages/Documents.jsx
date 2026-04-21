@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, FileText, Trash2, File, CheckCircle } from 'lucide-react';
 import {
   getAssistant,
@@ -100,8 +100,8 @@ export default function Documents() {
           onClick={() => navigate('/')}
           style={{ marginBottom: '1rem' }}
         >
-          <ArrowLeft size={16} />
-          Volver a asistentes
+          <ArrowLeft size={14} />
+          Volver
         </button>
         <h1 className="page-title">
           Documentos de <span>{assistant?.name}</span>
@@ -111,7 +111,7 @@ export default function Documents() {
         </p>
       </div>
 
-      {/* Zona de subida */}
+      {/* Upload zone */}
       <div
         className={`upload-zone ${dragover ? 'dragover' : ''}`}
         onClick={() => fileInputRef.current?.click()}
@@ -134,28 +134,28 @@ export default function Documents() {
             <div className="loading-dots" style={{ marginBottom: '1rem' }}>
               <span></span><span></span><span></span>
             </div>
-            <p>Procesando documento...</p>
-            <p style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
+            <p style={{ fontSize: '0.85rem' }}>Procesando documento…</p>
+            <p style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>
               Extrayendo texto, generando chunks y embeddings
             </p>
           </>
         ) : (
           <>
             <Upload />
-            <p style={{ fontWeight: 500, fontSize: '1rem' }}>
-              Arrastra un archivo aquí o haz clic para seleccionar
+            <p style={{ fontWeight: 500, fontSize: '0.9rem' }}>
+              Arrastra un archivo aquí o haz clic
             </p>
-            <p style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
-              Soporta PDF y TXT
+            <p style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>
+              PDF y TXT
             </p>
           </>
         )}
       </div>
 
-      {/* Lista de documentos */}
+      {/* Document list */}
       {documents.length === 0 ? (
         <div className="empty-state" style={{ marginTop: '2rem' }}>
-          <FileText size={64} />
+          <FileText size={48} />
           <h3>Sin documentos</h3>
           <p>Sube tu primer documento para empezar</p>
         </div>
@@ -165,7 +165,7 @@ export default function Documents() {
             <div key={doc.id} className="doc-item">
               <div className="doc-info">
                 <div className="doc-icon">
-                  <File size={20} />
+                  <File size={18} />
                 </div>
                 <div className="doc-details">
                   <h4>{doc.filename}</h4>
@@ -177,7 +177,6 @@ export default function Documents() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span className="badge badge-success">
-                  <CheckCircle size={10} />
                   Indexado
                 </span>
                 <button
@@ -185,7 +184,7 @@ export default function Documents() {
                   onClick={() => handleDelete(doc.id)}
                   title="Eliminar documento"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={14} />
                 </button>
               </div>
             </div>

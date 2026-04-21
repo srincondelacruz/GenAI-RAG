@@ -1,5 +1,5 @@
 import { Routes, Route, NavLink } from 'react-router-dom';
-import { Bot, FileText, MessageSquare } from 'lucide-react';
+import { Sparkles, MessageSquare } from 'lucide-react';
 import Assistants from './pages/Assistants';
 import Documents from './pages/Documents';
 import Chat from './pages/Chat';
@@ -9,8 +9,8 @@ export default function App() {
     <div className="app-layout">
       <header className="app-header">
         <div className="app-logo">
-          <Bot />
-          GenAI-RAG
+          <Sparkles />
+          GenAI·RAG
         </div>
         <nav className="app-nav">
           <NavLink
@@ -18,14 +18,12 @@ export default function App() {
             end
             className={({ isActive }) => (isActive ? 'active' : '')}
           >
-            <Bot size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} />
             Asistentes
           </NavLink>
           <NavLink
             to="/chat"
             className={({ isActive }) => (isActive ? 'active' : '')}
           >
-            <MessageSquare size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} />
             Chat
           </NavLink>
         </nav>

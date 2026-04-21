@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bot, Plus, Pencil, Trash2, FileText, MessageSquare, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, FileText, MessageSquare, X, Sparkles } from 'lucide-react';
 import {
   getAssistants,
   createAssistant,
@@ -89,8 +89,8 @@ export default function Assistants() {
           </p>
         </div>
         <button className="btn btn-primary" onClick={openCreate} id="btn-create-assistant">
-          <Plus size={16} />
-          Nuevo asistente
+          <Plus size={14} />
+          Nuevo
         </button>
       </div>
 
@@ -102,7 +102,7 @@ export default function Assistants() {
         </div>
       ) : assistants.length === 0 ? (
         <div className="empty-state">
-          <Bot size={64} />
+          <Sparkles size={48} />
           <h3>No tienes asistentes aún</h3>
           <p>Crea tu primer asistente para empezar</p>
         </div>
@@ -110,24 +110,21 @@ export default function Assistants() {
         <div className="card-grid">
           {assistants.map((a) => (
             <div key={a.id} className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <h3 className="card-title">{a.name}</h3>
-                  <div className="card-meta">
-                    <span className="badge badge-accent">
-                      <FileText size={10} />
-                      {a.document_count} docs
-                    </span>
-                    <span>
-                      {new Date(a.created_at).toLocaleDateString('es-ES')}
-                    </span>
-                  </div>
+              <div>
+                <h3 className="card-title">{a.name}</h3>
+                <div className="card-meta">
+                  <span className="badge badge-accent">
+                    {a.document_count} docs
+                  </span>
+                  <span>
+                    {new Date(a.created_at).toLocaleDateString('es-ES')}
+                  </span>
                 </div>
               </div>
               <p
                 style={{
                   marginTop: '0.75rem',
-                  fontSize: '0.8rem',
+                  fontSize: '0.78rem',
                   color: 'var(--text-muted)',
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
@@ -142,22 +139,22 @@ export default function Assistants() {
                   className="btn btn-secondary"
                   onClick={() => navigate(`/assistants/${a.id}/documents`)}
                 >
-                  <FileText size={14} />
-                  Documentos
+                  <FileText size={13} />
+                  Docs
                 </button>
                 <button
                   className="btn btn-primary"
                   onClick={() => navigate(`/chat/${a.id}`)}
                 >
-                  <MessageSquare size={14} />
+                  <MessageSquare size={13} />
                   Chat
                 </button>
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.25rem' }}>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px' }}>
                   <button className="btn-icon" onClick={() => openEdit(a)} title="Editar">
-                    <Pencil size={16} />
+                    <Pencil size={14} />
                   </button>
                   <button className="btn-icon danger" onClick={() => handleDelete(a.id)} title="Eliminar">
-                    <Trash2 size={16} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
@@ -170,12 +167,12 @@ export default function Assistants() {
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 className="modal-title">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-lg)' }}>
+              <h2 className="modal-title" style={{ marginBottom: 0 }}>
                 {editing ? 'Editar asistente' : 'Nuevo asistente'}
               </h2>
               <button className="btn-icon" onClick={() => setShowModal(false)}>
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
             <form onSubmit={handleSubmit}>
@@ -218,7 +215,7 @@ export default function Assistants() {
                   Cancelar
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  {editing ? 'Guardar cambios' : 'Crear asistente'}
+                  {editing ? 'Guardar' : 'Crear'}
                 </button>
               </div>
             </form>
