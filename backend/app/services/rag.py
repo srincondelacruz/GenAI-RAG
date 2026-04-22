@@ -92,9 +92,9 @@ def _retrieve_context(question: str, assistant_id: str) -> list[dict]:
 
 def _build_prompt(question: str, context_chunks: list[dict], system_prompt: str) -> list[dict]:
     """
-    Construye los mensajes para el LLM incluyendo el contexto recuperado.
+    Construye los mensajes para el LLM garantizando que la personalidad (system_prompt)
+    tenga prioridad y no sea sobreescrita por instrucciones en el user prompt.
     """
-    # Construir el bloque de contexto
     if context_chunks:
         context_text = "\n\n---\n\n".join(
             [
@@ -102,24 +102,35 @@ def _build_prompt(question: str, context_chunks: list[dict], system_prompt: str)
                 for chunk in context_chunks
             ]
         )
+        
+        full_system_prompt = (
+            f"{system_prompt}\n\n"
+            f"--- DIRECTIVAS OBLIGATORIAS ---\n"
+            f"1. Responde la pregunta del usuario basándote ÚNICAMENTE en el contexto proporcionado.\n"
+            f"2. Si el contexto no contiene información relevante, indícalo claramente.\n"
+            f"3. Cita las fuentes cuando sea posible (ej: [Fuente: document.pdf]).\n"
+            f"4. ES IMPRESCINDIBLE QUE MANTENGAS EL ROL, TONO Y PERSONALIDAD DEFINIDOS EN EL PRIMER PÁRRAFO DURANTE TODA LA RESPUESTA."
+        )
+        
         user_content = (
             f"Contexto de los documentos:\n\n{context_text}\n\n"
             f"---\n\n"
-            f"Pregunta del usuario: {question}\n\n"
-            f"Instrucciones: Responde la pregunta basándote en el contexto proporcionado. "
-            f"Si el contexto no contiene información relevante, indícalo claramente. "
-            f"Cita las fuentes cuando sea posible."
+            f"Pregunta del usuario: {question}"
         )
     else:
+        full_system_prompt = (
+            f"{system_prompt}\n\n"
+            f"--- DIRECTIVAS OBLIGATORIAS ---\n"
+            f"ES IMPRESCINDIBLE QUE MANTENGAS EL ROL Y PERSONALIDAD DEFINIDOS DURANTE TODA LA RESPUESTA."
+        )
         user_content = (
             f"Pregunta del usuario: {question}\n\n"
             f"Nota: No se encontraron documentos relevantes para esta pregunta. "
-            f"Responde con tu conocimiento general, pero aclara que no encontraste "
-            f"información en los documentos del asistente."
+            f"Aclara que no encontraste información en tu base de conocimientos, pero responde amablemente."
         )
 
     return [
-        {"role": "system", "content": system_prompt},
+        {"role": "system", "content": full_system_prompt},
         {"role": "user", "content": user_content},
     ]
 
